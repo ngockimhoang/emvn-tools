@@ -12,13 +12,15 @@ namespace TakeDownAsset
     {
         static void Main(string[] args)
         {
-            var inputPath = @"C:\Users\kimhoang\Desktop\EMVN\emvn-cms-prod\apl-tracks-delete.csv";
-            var youtubeReportPath = @"C:\Users\kimhoang\Desktop\EMVN\emvn-cms-prod\asset_full_report_Audiomachine_L_v1-1.csv";
-            var referencePath = @"C:\Users\kimhoang\Desktop\EMVN\emvn-cms-prod\take_down_reference.csv";
-            var ownershipPath = @"C:\Users\kimhoang\Desktop\EMVN\emvn-cms-prod\take_down_ownership.csv";
+            var srDeletePath = @"C:\Users\kimhoang\Desktop\EMVN\sr-delete.csv";
+            var atDeletePath = @"C:\Users\kimhoang\Desktop\EMVN\at-delete.csv";
+            var youtubeReportPath = @"D:\GoProjects\src\emvn-minions\youtube-asset-cli\input\asset_full_report_Audiomachine_L_v1-1.csv";
+            var referencePath = @"C:\Users\kimhoang\Desktop\EMVN\take_down_reference.csv";
+            var ownershipPath = @"C:\Users\kimhoang\Desktop\EMVN\take_down_ownership.csv";
             var assetList = new Dictionary<string, YoutubeAsset>();
+            var atAssetList = new Dictionary<string, YoutubeAsset>();
 
-            using (var streamReader = System.IO.File.OpenText(inputPath))
+            using (var streamReader = System.IO.File.OpenText(srDeletePath))
             {
                 using (var reader = new CsvHelper.CsvReader(streamReader, System.Threading.Thread.CurrentThread.CurrentCulture))
                 {
@@ -26,10 +28,27 @@ namespace TakeDownAsset
                     reader.ReadHeader();
                     while (reader.Read())
                     {
-                        var assetID = reader.GetField<string>(0);                        
+                        var assetID = reader.GetField<string>(0);
                         assetList.Add(assetID, new YoutubeAsset()
                         {
-                            AssetID = assetID                            
+                            AssetID = assetID
+                        });
+                    }
+                }
+            }
+
+            using (var streamReader = System.IO.File.OpenText(atDeletePath))
+            {
+                using (var reader = new CsvHelper.CsvReader(streamReader, System.Threading.Thread.CurrentThread.CurrentCulture))
+                {
+                    reader.Read();
+                    reader.ReadHeader();
+                    while (reader.Read())
+                    {
+                        var assetID = reader.GetField<string>(0);
+                        atAssetList.Add(assetID, new YoutubeAsset()
+                        {
+                            AssetID = assetID
                         });
                     }
                 }
@@ -121,7 +140,7 @@ namespace TakeDownAsset
                             csvWriter.WriteField("");
                             csvWriter.WriteField("");
                             csvWriter.NextRecord();
-                        }
+                        }                       
                         csvWriter.Flush();
                     }
                 }

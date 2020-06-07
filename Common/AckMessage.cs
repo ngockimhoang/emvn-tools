@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 
 namespace Common
 {
+    [XmlRoot("FtpAcknowledgementMessage")]
     public class AckMessage
     {
         [XmlElement("FileStatus")]

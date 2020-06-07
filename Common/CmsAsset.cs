@@ -94,7 +94,7 @@ namespace Common
         public string AssetLabel { get; set; }
         public string ActiveReferenceID { get; set; }
         public string InactiveReferenceID { get; set; }
-
+        public int NumberOfActiveClaims { get; set; }
         public string[] ActiveReferenceIDList
         {
             get
