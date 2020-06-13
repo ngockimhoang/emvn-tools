@@ -12,14 +12,11 @@ namespace TakeDownAsset
     {
         static void Main(string[] args)
         {
-            var srDeletePath = @"C:\Users\kimhoang\Desktop\EMVN\sr-delete.csv";
-            var atDeletePath = @"C:\Users\kimhoang\Desktop\EMVN\at-delete.csv";
+            var srDeletePath = @"C:\Users\kimhoang\Desktop\EMVN\sr-delete.csv";            
             var youtubeReportPath = @"D:\GoProjects\src\emvn-minions\youtube-asset-cli\input\asset_full_report_Audiomachine_L_v1-1.csv";
             var referencePath = @"C:\Users\kimhoang\Desktop\EMVN\take_down_reference.csv";
-            var ownershipPath = @"C:\Users\kimhoang\Desktop\EMVN\take_down_ownership.csv";
-            //var atPath = @"C:\Users\kimhoang\Desktop\EMVN\take_down_art_track.csv";
-            var assetList = new Dictionary<string, YoutubeAsset>();
-            var atAssetList = new Dictionary<string, YoutubeAsset>();
+            var ownershipPath = @"C:\Users\kimhoang\Desktop\EMVN\take_down_ownership.csv";            
+            var assetList = new Dictionary<string, YoutubeAsset>();            
 
             using (var streamReader = System.IO.File.OpenText(srDeletePath))
             {
@@ -36,24 +33,7 @@ namespace TakeDownAsset
                         });
                     }
                 }
-            }
-
-            using (var streamReader = System.IO.File.OpenText(atDeletePath))
-            {
-                using (var reader = new CsvHelper.CsvReader(streamReader, System.Threading.Thread.CurrentThread.CurrentCulture))
-                {
-                    reader.Read();
-                    reader.ReadHeader();
-                    while (reader.Read())
-                    {
-                        var assetID = reader.GetField<string>(0);
-                        atAssetList.Add(assetID, new YoutubeAsset()
-                        {
-                            AssetID = assetID
-                        });
-                    }
-                }
-            }
+            }            
 
             using (var streamReader = System.IO.File.OpenText(youtubeReportPath))
             {
@@ -145,54 +125,7 @@ namespace TakeDownAsset
                         csvWriter.Flush();
                     }
                 }
-            }
-
-            //using (var stream = new FileStream(atPath, FileMode.Create))
-            //{
-            //    using (var writer = new StreamWriter(stream, Encoding.UTF8))
-            //    {
-            //        using (var csvWriter = new CsvHelper.CsvWriter(writer, System.Threading.Thread.CurrentThread.CurrentCulture))
-            //        {
-            //            csvWriter.Configuration.HasHeaderRecord = true;
-            //            csvWriter.WriteField<string>("ddex_party_id");
-            //            csvWriter.WriteField<string>("album_artist");
-            //            csvWriter.WriteField<string>("album_artist_isnis");
-            //            csvWriter.WriteField<string>("album_title");
-            //            csvWriter.WriteField<string>("album_grid");
-            //            csvWriter.WriteField<string>("album_ean");
-            //            csvWriter.WriteField<string>("album_upc");
-            //            csvWriter.WriteField<string>("album_release_date");
-            //            csvWriter.WriteField<string>("album_label");
-            //            csvWriter.WriteField<string>("album_art_filename");
-            //            csvWriter.WriteField<string>("track_number");
-            //            csvWriter.WriteField<string>("track_title");
-            //            csvWriter.WriteField<string>("track_filename");
-            //            csvWriter.WriteField<string>("track_custom_id");
-            //            csvWriter.WriteField<string>("track_artist");
-            //            csvWriter.WriteField<string>("track_artist_isnis");
-            //            csvWriter.WriteField<string>("track_genres");
-            //            csvWriter.WriteField<string>("track_isrc");
-            //            csvWriter.WriteField<string>("track_pline");
-            //            csvWriter.WriteField<string>("track_territory_start_dates");
-            //            csvWriter.WriteField<string>("track_explicit_lyrics");
-            //            csvWriter.WriteField<string>("track_add_at_asset_labels");
-            //            csvWriter.WriteField<string>("track_add_sr_asset_labels");
-            //            csvWriter.NextRecord();
-
-            //            foreach (var asset in assetList)
-            //            {
-            //                foreach (var reference in asset.Value.ActiveReferenceIDList)
-            //                {
-            //                    csvWriter.WriteField(reference);
-            //                    csvWriter.WriteField("deactivate");
-            //                    csvWriter.WriteField("");
-            //                    csvWriter.NextRecord();
-            //                }
-            //            }
-            //            csvWriter.Flush();
-            //        }
-            //    }
-            //}
+            }            
         }
     }
 }
