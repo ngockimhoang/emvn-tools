@@ -14,20 +14,12 @@ namespace CheckAlbumValid
     {
         static void Main(string[] args)
         {
-            var albumFoldersPath = @"D:\GoProjects\src\emvn-minions\youtube-asset-cli\output\album_tracks";
-            var ddexPath = @"D:\GoProjects\src\emvn-minions\youtube-asset-cli\output\ddex_packages";
+            var albumFoldersPath = @"D:\GoProjects\src\emvn-minions\youtube-asset-cli\output\album_tracks";            
             var ytAssetFile = @"D:\GoProjects\src\emvn-minions\youtube-asset-cli\input\asset_full_report_Audiomachine_L_v1-1.csv";
-            var srDeletePath = @"C:\Users\kimhoang\Desktop\EMVN\sr-delete.csv";
-            var atDeletePath = @"C:\Users\kimhoang\Desktop\EMVN\at-delete.csv";
-            var reviewPath = @"C:\Users\kimhoang\Desktop\EMVN\duplicate-review.csv";
+            var srDeletePath = @"C:\Users\kimhoang\Desktop\EMVN\sr-delete.csv";                        
 
-            var assetDict = new Dictionary<string, YoutubeAsset>();
-            var SRToATDict = new Dictionary<string, string>();
-            var takeDownSRAssetList = new List<string>();
-            var takeDownATAssetList = new List<string>();
-            var takeDownRecentSRAssetList = new List<string>();
-            var takeDownRecentATAssetList = new List<string>();
-            var needReviewSRAssetList = new List<List<string>>();
+            var assetDict = new Dictionary<string, YoutubeAsset>();            
+            var takeDownSRAssetList = new List<string>();                                    
 
             using (var streamReader = System.IO.File.OpenText(ytAssetFile))
             {
@@ -41,92 +33,54 @@ namespace CheckAlbumValid
                         if (assetType == "SOUND_RECORDING")
                         {
                             var numberOfActiveClaims = reader.GetField<int>("active_claims");
+                            var numberOfDailyViews = reader.GetField<int>("approx_daily_views");
                             var assetID = reader.GetField<string>("asset_id");
                             assetDict.Add(assetID, new YoutubeAsset()
                             {
                                 AssetID = assetID,
-                                NumberOfActiveClaims = numberOfActiveClaims
+                                NumberOfActiveClaims = numberOfActiveClaims,
+                                NumberOfDailyViews = numberOfDailyViews
                             });
                         }
                     }
                 }
-            }
-
-            foreach (var file in Directory.GetFiles(ddexPath, "ACK_*.xml", SearchOption.AllDirectories))
-            {
-                if (file.Contains("APL"))
-                {
-                    var xmlSerializer = new XmlSerializer(typeof(AckMessage));
-                    using (var reader = File.OpenRead(file))
-                    {
-                        var ackMessage = xmlSerializer.Deserialize(reader) as AckMessage;
-                        foreach (var affectedResource in ackMessage.AffectedResources)
-                        {
-                            var srProp = affectedResource.Properties.Where(p => p.Namespace == "YOUTUBE:SR_ASSET_ID").FirstOrDefault();
-                            var atProp = affectedResource.Properties.Where(p => p.Namespace == "YOUTUBE:AT_ASSET_ID").FirstOrDefault();
-                            if (srProp != null
-                                && atProp != null)
-                            {
-                                SRToATDict.Add(srProp.Text, atProp.Text);
-                            }
-                        }
-                    }
-                }
-            }
+            }          
 
             foreach (var file in Directory.GetFiles(albumFoldersPath, "*.json", SearchOption.AllDirectories))
             {
                 var fileName = Path.GetFileName(file);
-                if (fileName.StartsWith("APL"))
+                if (fileName == "APL 057.json")
                 {
-                    var cmsAlbum = JsonConvert.DeserializeObject<CmsAlbum>(File.ReadAllText(file));                                        
+                    var cmsAlbum = JsonConvert.DeserializeObject<CmsAlbum>(File.ReadAllText(file));
+                    var hasDuplicate = false;
                     foreach (var dupGroup in cmsAlbum.Assets.GroupBy(p => p.TrackCode)
                                                             .Where(p => p.Count() > 1))
-                    {                        
-                        var removeCount = 0;
-                        var remainingList = new List<string>();
+                    {
+                        hasDuplicate = true;
                         for (var i = 0; i < dupGroup.Count(); i++)
                         {
                             var asset = dupGroup.ToArray()[i];
-                            //it does not appear in the dict
-                            //it means the this is added wrongly in recent packages
-                            if (!assetDict.ContainsKey(asset.AssetID))
-                            {
-                                takeDownRecentSRAssetList.Add(asset.AssetID);
-                                if (SRToATDict.ContainsKey(asset.AssetID))
-                                {
-                                    takeDownRecentATAssetList.Add(SRToATDict[asset.AssetID]);
-                                }
-                                removeCount++;
-                            }
-                            else
-                            {
-                                var numberOfClaims = assetDict[asset.AssetID].NumberOfActiveClaims;
-                                if (numberOfClaims <= 0)
-                                {
-                                    takeDownSRAssetList.Add(asset.AssetID);
-                                    if (SRToATDict.ContainsKey(asset.AssetID))
-                                    {
-                                        takeDownATAssetList.Add(SRToATDict[asset.AssetID]);
-                                    }
-                                    removeCount++;
-                                }
-                                else remainingList.Add(asset.AssetID);
-                            }
-                                                        
-                            if (dupGroup.Count() - removeCount == 1)
-                                break;
+                            var ytAsset = assetDict[asset.AssetID];
+                            asset.NumberOfActiveClaims = ytAsset.NumberOfActiveClaims;
+                            asset.NumberOfDailyViews = ytAsset.NumberOfDailyViews;
                         }
 
-                        if (remainingList.Count >= 2)
+                        var dupGroupAssets = dupGroup.OrderByDescending(p => p.NumberOfActiveClaims).ThenByDescending(p => p.NumberOfDailyViews).ToArray();
+                        for (var i = 1; i < dupGroupAssets.Count(); i++)
                         {
-                            needReviewSRAssetList.Add(remainingList);
-                        }
+                            cmsAlbum.Assets.Remove(dupGroupAssets[i]);
+                            takeDownSRAssetList.Add(dupGroupAssets[i].AssetID);
+                        }                                         
                     }
-                }                
-            }       
 
-            using (var stream = new FileStream(srDeletePath, FileMode.OpenOrCreate))
+                    if (hasDuplicate)
+                    {
+                        File.WriteAllText(file, JsonConvert.SerializeObject(cmsAlbum));
+                    }
+                }
+            }
+
+            using (var stream = new FileStream(srDeletePath, FileMode.Create))
             {
                 using (var writer = new StreamWriter(stream, Encoding.UTF8))
                 {
@@ -145,40 +99,7 @@ namespace CheckAlbumValid
                         csvWriter.Flush();
                     }
                 }
-            }
-
-            using (var stream = new FileStream(atDeletePath, FileMode.OpenOrCreate))
-            {
-                using (var writer = new StreamWriter(stream, Encoding.UTF8))
-                {
-                    using (var csvWriter = new CsvHelper.CsvWriter(writer, System.Threading.Thread.CurrentThread.CurrentCulture))
-                    {
-                        csvWriter.Configuration.HasHeaderRecord = true;
-                        csvWriter.WriteField<string>("asset_id");
-                        csvWriter.NextRecord();
-
-                        foreach (var cmsAsset in takeDownATAssetList)
-                        {
-                            csvWriter.WriteField(cmsAsset);
-                            csvWriter.NextRecord();
-                        }
-
-                        csvWriter.Flush();
-                    }
-                }
-            }
-
-            using (var stream = new FileStream(reviewPath, FileMode.OpenOrCreate))
-            {
-                using (var writer = new StreamWriter(stream, Encoding.UTF8))
-                {
-                    foreach (var assets in needReviewSRAssetList)
-                    {
-                        writer.WriteLine(string.Join(",", assets.ToArray()));
-                    }
-                    writer.Flush();
-                }
-            }
+            }                       
         }
     }
 }

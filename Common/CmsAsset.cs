@@ -41,6 +41,10 @@ namespace Common
         public List<AssetWriter> Writers { get; set; }
         [JsonProperty("publishers")]
         public List<AssetPublisher> Publishers { get; set; }
+        [JsonIgnore]
+        public int NumberOfActiveClaims { get; set; }
+        [JsonIgnore]
+        public int NumberOfDailyViews { get; set; }
 
         #region External Properties
         [JsonIgnore]
@@ -95,6 +99,7 @@ namespace Common
         public string ActiveReferenceID { get; set; }
         public string InactiveReferenceID { get; set; }
         public int NumberOfActiveClaims { get; set; }
+        public int NumberOfDailyViews { get; set; }
         public string[] ActiveReferenceIDList
         {
             get
