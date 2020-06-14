@@ -75,7 +75,7 @@ namespace CheckAlbumValid
 
                     if (hasDuplicate)
                     {
-                        File.WriteAllText(file, JsonConvert.SerializeObject(cmsAlbum));
+                        File.WriteAllText(file, JsonConvert.SerializeObject(cmsAlbum, Formatting.Indented));
                     }
                 }
             }
