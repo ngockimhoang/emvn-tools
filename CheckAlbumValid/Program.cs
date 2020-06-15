@@ -60,17 +60,27 @@ namespace CheckAlbumValid
                         for (var i = 0; i < dupGroup.Count(); i++)
                         {
                             var asset = dupGroup.ToArray()[i];
-                            var ytAsset = assetDict[asset.AssetID];
-                            asset.NumberOfActiveClaims = ytAsset.NumberOfActiveClaims;
-                            asset.NumberOfDailyViews = ytAsset.NumberOfDailyViews;
+                            if (assetDict.ContainsKey(asset.AssetID))
+                            {
+                                var ytAsset = assetDict[asset.AssetID];
+                                asset.NumberOfActiveClaims = ytAsset.NumberOfActiveClaims;
+                                asset.NumberOfDailyViews = ytAsset.NumberOfDailyViews;
+                            }
+                            else
+                            {
+                                asset.NumberOfActiveClaims = -1;
+                                asset.NumberOfDailyViews = -1;
+                            }
                         }
 
                         var dupGroupAssets = dupGroup.OrderByDescending(p => p.NumberOfActiveClaims).ThenByDescending(p => p.NumberOfDailyViews).ToArray();
                         for (var i = 1; i < dupGroupAssets.Count(); i++)
                         {
                             cmsAlbum.Assets.Remove(dupGroupAssets[i]);
-                            takeDownSRAssetList.Add(dupGroupAssets[i].AssetID);
-                        }                                         
+                            if (!string.IsNullOrEmpty(dupGroupAssets[i].AssetID))
+                                takeDownSRAssetList.Add(dupGroupAssets[i].AssetID);
+                            else takeDownSRAssetList.Add(dupGroupAssets[i].ISRC);
+                        }
                     }
 
                     if (hasDuplicate)
