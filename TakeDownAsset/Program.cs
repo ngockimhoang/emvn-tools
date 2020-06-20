@@ -27,10 +27,13 @@ namespace TakeDownAsset
                     while (reader.Read())
                     {
                         var assetID = reader.GetField<string>(0);
-                        assetList.Add(assetID, new YoutubeAsset()
+                        if (!assetList.ContainsKey(assetID))
                         {
-                            AssetID = assetID
-                        });
+                            assetList.Add(assetID, new YoutubeAsset()
+                            {
+                                AssetID = assetID
+                            });
+                        }                  
                     }
                 }
             }            
