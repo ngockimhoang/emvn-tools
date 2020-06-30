@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckDuplicateISRC", "Check
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupAsset", "GroupAsset\GroupAsset.csproj", "{7D912323-5FDA-4C88-B2FB-666A7F7F7517}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssertAsset", "AssertAsset\AssertAsset.csproj", "{182329DC-1D9C-46C4-BF6A-3129B566BFA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{7D912323-5FDA-4C88-B2FB-666A7F7F7517}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D912323-5FDA-4C88-B2FB-666A7F7F7517}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D912323-5FDA-4C88-B2FB-666A7F7F7517}.Release|Any CPU.Build.0 = Release|Any CPU
+		{182329DC-1D9C-46C4-BF6A-3129B566BFA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{182329DC-1D9C-46C4-BF6A-3129B566BFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{182329DC-1D9C-46C4-BF6A-3129B566BFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{182329DC-1D9C-46C4-BF6A-3129B566BFA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -49,7 +49,7 @@ namespace CheckAlbumValid
             foreach (var file in Directory.GetFiles(albumFoldersPath, "*.json", SearchOption.AllDirectories))
             {
                 var fileName = Path.GetFileName(file);
-                if (fileName == "APL 004.json")
+                if (fileName == "APL 344.json")
                 {
                     var cmsAlbum = JsonConvert.DeserializeObject<CmsAlbum>(File.ReadAllText(file));
                     var hasDuplicate = false;
