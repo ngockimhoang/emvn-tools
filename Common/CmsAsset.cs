@@ -100,6 +100,7 @@ namespace Common
         public string InactiveReferenceID { get; set; }
         public int NumberOfActiveClaims { get; set; }
         public int NumberOfDailyViews { get; set; }
+        public string CustomID { get; set; }
         public string[] ActiveReferenceIDList
         {
             get

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,31 @@ namespace AssertAsset
         {
             var inputPath = @"C:\Users\kimhoang\Desktop\EMVN\03-23-20 Brand X Music asset report update.csv";
             var outputPath = @"C:\Users\kimhoang\Desktop\EMVN\assert_asset.csv";
+            var assetList = new List<YoutubeAsset>();
+
+            using (var streamReader = System.IO.File.OpenText(inputPath))
+            {
+                using (var reader = new CsvHelper.CsvReader(streamReader, System.Threading.Thread.CurrentThread.CurrentCulture))
+                {
+                    reader.Read();
+                    reader.ReadHeader();
+                    while (reader.Read())
+                    {
+                        if (reader.GetField<string>("asset_type") == "SOUND_RECORDING")
+                        {                            
+                            var asset = new YoutubeAsset()
+                            {
+                                AssetID = reader.GetField<string>("asset_id"),
+                                CustomID = reader.GetField<string>("custom_id"),
+                                AssetTitle = reader.GetField<string>("asset_title"),
+                                AssetLabel = "Brand X Music",
+
+                            };
+                            assetList.Add(asset);
+                        }
+                    }
+                }
+            }
 
             using (var stream = new FileStream(outputPath, FileMode.Create))
             {
@@ -36,13 +62,13 @@ namespace AssertAsset
 
                         foreach (var asset in assetList)
                         {
-                            csvWriter.WriteField(asset.Key);
-                            csvWriter.WriteField("");
+                            csvWriter.WriteField(asset.AssetID);
+                            csvWriter.WriteField(asset.CustomID);
                             csvWriter.WriteField("SOUND_RECORDING");
-                            csvWriter.WriteField("");
-                            csvWriter.WriteField("");
-                            csvWriter.WriteField("0%WW");
-                            csvWriter.WriteField("");
+                            csvWriter.WriteField(asset.AssetTitle);
+                            csvWriter.WriteField(asset.AssetLabel);
+                            csvWriter.WriteField("WW");
+                            csvWriter.WriteField("yes");
                             csvWriter.WriteField("");
                             csvWriter.WriteField("");
                             csvWriter.WriteField("Monetize in all countries");
