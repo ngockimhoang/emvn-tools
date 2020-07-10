@@ -13,117 +13,55 @@ namespace WrongAssetID
     {
         static void Main(string[] args)
         {
-            var cmsAssetPath = @"C:\Users\kimhoang\Desktop\EMVN\emvn-cms-prod\cms_assets.json";
-            var youtubeReportPath = @"C:\Users\kimhoang\Desktop\EMVN\emvn-cms-prod\asset_full_report_Audiomachine_L_v1-1.csv";
-            var outputPath = @"C:\Users\kimhoang\Desktop\EMVN\emvn-cms-prod\cms_assets_asset_id_fixed.csv";
-            var output2Path = @"C:\Users\kimhoang\Desktop\EMVN\emvn-cms-prod\cms_assets_asset_id_not_found.csv";
+            var ddexPath = @"D:\GoProjects\src\emvn-minions\youtube-asset-cli\output\ddex_packages";
+            var referencePath = @"C:\Users\kimhoang\Desktop\EMVN\take_down_reference.csv";
+            var references = new List<string>();
 
-            var cmsAssets = new List<CmsAsset>();
-            using (var reader = new StreamReader(cmsAssetPath, Encoding.UTF8))
+            foreach (var directory in Directory.GetDirectories(ddexPath))
             {
-                while (!reader.EndOfStream)
+                var directoryName = Path.GetFileName(directory);
+                if (directoryName.StartsWith("SPL0041")
+                    || directoryName.StartsWith("SPL0042")
+                    || directoryName.StartsWith("SPL0043")
+                    || directoryName.StartsWith("SPL0044")
+                    || directoryName.StartsWith("SPL0045")
+                    || directoryName.StartsWith("SPL0046")
+                    || directoryName.StartsWith("SPL0047")
+                    || directoryName.StartsWith("SPL0048")
+                    || directoryName.StartsWith("SPL0049")
+                    || directoryName.StartsWith("SPL0050"))
                 {
-                    var line = reader.ReadLine();
-                    var cmsAsset = JsonConvert.DeserializeObject<CmsAsset>(line);
-                    if ((string.IsNullOrEmpty(cmsAsset.AssetType) || cmsAsset.AssetType == "recording")
-                        && !string.IsNullOrEmpty(cmsAsset.Status)
-                        && (cmsAsset.Status.ToLower() == "success" || cmsAsset.Status.ToLower() == "warning")
-                        && cmsAsset.AssetID != null
-                        && cmsAsset.AssetID.Trim().Length == 11) //this is the length of reference id
-                        cmsAssets.Add(cmsAsset);
+                    var ackFilePath = Directory.GetFiles(directory, "ACK_*")[0];
+                    var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(AckMessage));
+                    var ackMessage = xmlSerializer.Deserialize(File.OpenText(ackFilePath)) as AckMessage;
+                    var wrongReferences = ackMessage.AffectedResources.Where(p => string.IsNullOrEmpty(ackMessage.ErrorText) || !ackMessage.ErrorText.Contains(p.Reference)).Select(p => p.Reference).ToArray();
+                    references.AddRange(wrongReferences);
                 }
             }
 
-            Console.WriteLine("Number of Assets with invalid asset id: {0}", cmsAssets.Count);
-
-
-            var ytAssetsByReferenceID = new Dictionary<string, YoutubeAsset>();
-            var ytAssetsByInactiveReferenceID = new Dictionary<string, YoutubeAsset>();
-            using (var streamReader = System.IO.File.OpenText(youtubeReportPath))
+            using (var stream = new FileStream(referencePath, FileMode.Create))
             {
-                using (var reader = new CsvHelper.CsvReader(streamReader, System.Threading.Thread.CurrentThread.CurrentCulture))
+                using (var writer = new StreamWriter(stream, Encoding.UTF8))
                 {
-                    reader.Configuration.TrimOptions = CsvHelper.Configuration.TrimOptions.Trim;
-                    reader.Read();
-                    reader.ReadHeader();
-                    while (reader.Read())
+                    using (var csvWriter = new CsvHelper.CsvWriter(writer, System.Threading.Thread.CurrentThread.CurrentCulture))
                     {
-                        if (reader.GetField<string>("asset_type") == "SOUND_RECORDING")
+                        csvWriter.Configuration.HasHeaderRecord = true;
+                        csvWriter.WriteField<string>("reference_id");
+                        csvWriter.WriteField<string>("reference_state");
+                        csvWriter.WriteField<string>("release_claims");
+                        csvWriter.NextRecord();
+
+                        foreach (var reference in references)
                         {
-                            var ytAsset = new YoutubeAsset()
-                            {
-                                ISRC = reader.GetField<string>("isrc"),
-                                AssetID = reader.GetField<string>("asset_id"),
-                                AssetTitle = reader.GetField<string>("asset_title"),
-                                Artist = reader.GetField<string>("artist"),
-                                AssetLabel = reader.GetField<string>("asset_label"),
-                                ActiveReferenceID = reader.GetField<string>("active_reference_id"),
-                                InactiveReferenceID = reader.GetField<string>("inactive_reference_id")
-                            };
-                            foreach (var activeReferenceID in ytAsset.ActiveReferenceIDList)
-                            {
-                                ytAssetsByReferenceID.Add(activeReferenceID, ytAsset);
-                            }
-                            foreach (var inactiveReferenceID in ytAsset.InactiveReferenceIDList)
-                            {
-                                ytAssetsByInactiveReferenceID.Add(inactiveReferenceID, ytAsset);
-                            }                                                  
+                            csvWriter.WriteField(reference);
+                            csvWriter.WriteField("deactivate");
+                            csvWriter.WriteField("");
+                            csvWriter.NextRecord();
                         }
+                        csvWriter.Flush();
                     }
                 }
             }
-
-            var stream = new FileStream(outputPath, FileMode.Create);
-            var stream2 = new FileStream(output2Path, FileMode.Create);
-            var writer = new StreamWriter(stream, Encoding.UTF8);
-            var writer2 = new StreamWriter(stream2, Encoding.UTF8);
-            var csvWriter = new CsvHelper.CsvWriter(writer, System.Threading.Thread.CurrentThread.CurrentCulture);
-            var csvWriter2 = new CsvHelper.CsvWriter(writer2, System.Threading.Thread.CurrentThread.CurrentCulture);
-
-            csvWriter.Configuration.HasHeaderRecord = true;
-            csvWriter.WriteField<string>("ID");
-            csvWriter.WriteField<string>("Invalid_Asset_ID");
-            csvWriter.WriteField<string>("Correct_Asset_ID");
-            csvWriter.NextRecord();
-
-            csvWriter2.Configuration.HasHeaderRecord = true;
-            csvWriter2.WriteField<string>("ID");
-            csvWriter2.WriteField<string>("Invalid_Asset_ID");
-            csvWriter2.WriteField<string>("Correct_Asset_ID");
-            csvWriter2.NextRecord();
-
-            foreach (var cmsAsset in cmsAssets)
-            {
-                if (ytAssetsByReferenceID.ContainsKey(cmsAsset.AssetID))
-                {
-                    csvWriter.WriteField(cmsAsset.ID.OID);
-                    csvWriter.WriteField(cmsAsset.AssetID);
-                    csvWriter.WriteField(ytAssetsByReferenceID[cmsAsset.AssetID].AssetID);
-                    csvWriter.NextRecord();
-                }
-                else if (ytAssetsByInactiveReferenceID.ContainsKey(cmsAsset.AssetID))
-                {
-                    csvWriter.WriteField(cmsAsset.ID.OID);
-                    csvWriter.WriteField(cmsAsset.AssetID);
-                    csvWriter.WriteField(ytAssetsByInactiveReferenceID[cmsAsset.AssetID].AssetID);
-                    csvWriter.NextRecord();
-                }
-                else
-                {
-                    csvWriter2.WriteField(cmsAsset.ID.OID);
-                    csvWriter2.WriteField(cmsAsset.AssetID);
-                    csvWriter2.WriteField("");
-                    csvWriter2.NextRecord();
-                }
-            }
-
-            csvWriter.Flush();
-            csvWriter2.Flush();
-            csvWriter.Dispose();
-            csvWriter2.Dispose();
-
-            Console.WriteLine("Done");
-            Console.ReadKey();
         }
     }
 }

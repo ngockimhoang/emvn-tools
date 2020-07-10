@@ -24,6 +24,18 @@ namespace Common
         public string ISRC { get; set; }
         [XmlElement("ProprietaryId")]
         public ProprietaryId[] Properties { get; set; }
+
+        [XmlIgnore]
+        public string Reference
+        {
+            get
+            {
+                var referenceProperty = Properties.Where(p => p.Namespace == "YOUTUBE:REFERENCE_ID").FirstOrDefault();
+                if (referenceProperty != null)
+                    return referenceProperty.Text;
+                return null;
+            }
+        }
     }
 
     public class ProprietaryId
