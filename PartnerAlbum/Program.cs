@@ -17,26 +17,41 @@ namespace PartnerAlbum
         {
             var directory = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "albums");
             System.IO.Directory.CreateDirectory(directory);
-            var albums = GetAllAlbums();
+            var albums = GetAllAlbums();           
+
+            var tasks = new List<System.Threading.Tasks.Task>();
+            for (var i = 0; i < albums.Count; i+=1000)
+            {
+                var partAlbums = albums.Skip(i).Take(1000).ToList();
+                var task = System.Threading.Tasks.Task.Factory.StartNew(() => ProcessAlbums(directory, partAlbums));
+                tasks.Add(task);
+            }
+
+            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+        }
+
+        static void ProcessAlbums(string directory, List<PartnerAlbum> albums)
+        {
             foreach (var album in albums)
             {
                 Console.WriteLine("Getting ddex for album " + album.AlbumCode);
-                SaveAlbumDDEXFile(directory, album);
-            }           
+                if (!System.IO.File.Exists(System.IO.Path.Combine(directory, album.AlbumCode + ".xml")))
+                    SaveAlbumDDEXFile(directory, album);
+            }
         }
 
-        static List<PartnerAlnum> GetAllAlbums()
+        static List<PartnerAlbum> GetAllAlbums()
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://developers.emvn.co");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUalhiaGFaeDk0WVc4bDh5MzY2WjNSZG4zbGF1Nkg1QSJ9.e7fr69iaYk0V2jl2OR3upYXm7_Sv5BDLufeGVcMlkVw");
                 var response = client.GetAsync("/partner/album-list?pageSize=12000&pageNo=0").Result;
-                return JsonConvert.DeserializeObject<List<PartnerAlnum>>(response.Content.ReadAsStringAsync().Result);
+                return JsonConvert.DeserializeObject<List<PartnerAlbum>>(response.Content.ReadAsStringAsync().Result);
             }
         }
 
-        static void SaveAlbumDDEXFile(string directory, PartnerAlnum album)
+        static void SaveAlbumDDEXFile(string directory, PartnerAlbum album)
         {
             using (var client = new HttpClient())
             {
@@ -66,7 +81,7 @@ namespace PartnerAlbum
         }
     }
 
-    class PartnerAlnum
+    class PartnerAlbum
     {
         [JsonProperty("album_code")]
         public string AlbumCode { get; set; }
