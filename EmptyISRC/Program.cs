@@ -28,7 +28,10 @@ namespace EmptyISRC
                             || !record.Any())
                             break;
                         var catalog = record[3].ToUpper();
+                        var albumCode = record[6];
                         var isrc = record[33];
+                        if (string.IsNullOrWhiteSpace(albumCode))
+                            continue;
                         if (string.IsNullOrWhiteSpace(isrc))
                         {
                             var assetList = new List<string[]>();
@@ -43,9 +46,19 @@ namespace EmptyISRC
                 }
             }
 
+            //SOUND IDEAS (SFX LIBRARY)
+            //HOLLYWOOD EDGE (SFX LIBRARY)
+            //SOUNDDOGS
+
+            var excludes = new string[] { "SOUND IDEAS (SFX LIBRARY)", "HOLLYWOOD EDGE (SFX LIBRARY)", "SOUNDDOGS" };
+            var total = assetDict.Where(p => !excludes.Contains(p.Key)).Sum(p => p.Value.Count);
+
             //write to disk
             foreach (var catalog in assetDict)
             {
+                if (excludes.Contains(catalog.Key))
+                    continue;
+
                 using (var writer = File.CreateText(Path.Combine(outputFolder, catalog.Key + ".csv")))
                 {
                     using (var csvWriter = new CsvHelper.CsvWriter(writer, System.Threading.Thread.CurrentThread.CurrentCulture))
