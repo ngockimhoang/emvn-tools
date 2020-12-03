@@ -14,6 +14,12 @@ namespace EmptyISRC
             var path = @"D:\go-src\src\emvn-minions\youtube-asset-cli\input\source-audio-tracks.csv";
             var outputFolder = @"D:\emvn-data\empty-isrc";
             var header = new string[0];
+
+            //exclude catalogs
+            var excludes = new string[] { "SOUND IDEAS (SFX LIBRARY)",
+                "HOLLYWOOD EDGE (SFX LIBRARY)",
+                "SOUNDDOGS" };
+            
             //dictionary by catalog
             var assetDict = new Dictionary<string, List<string[]>>();
             using (var reader = File.OpenText(path))
@@ -30,8 +36,17 @@ namespace EmptyISRC
                         var catalog = record[3].ToUpper();
                         var albumCode = record[6];
                         var isrc = record[33];
+                        var label = record[4];                      
+                        //exclude labels with "stems"
                         if (string.IsNullOrWhiteSpace(albumCode))
                             continue;
+
+                        if (excludes.Contains(catalog))
+                            continue;
+
+                        if (label.ToLower().Contains("stems"))
+                            continue;
+
                         if (string.IsNullOrWhiteSpace(isrc))
                         {
                             var assetList = new List<string[]>();
@@ -45,13 +60,8 @@ namespace EmptyISRC
                     }
                 }
             }
-
-            //SOUND IDEAS (SFX LIBRARY)
-            //HOLLYWOOD EDGE (SFX LIBRARY)
-            //SOUNDDOGS
-
-            var excludes = new string[] { "SOUND IDEAS (SFX LIBRARY)", "HOLLYWOOD EDGE (SFX LIBRARY)", "SOUNDDOGS" };
-            var total = assetDict.Where(p => !excludes.Contains(p.Key)).Sum(p => p.Value.Count);
+                     
+            var total = assetDict.Sum(p => p.Value.Count);
 
             //write to disk
             foreach (var catalog in assetDict)
