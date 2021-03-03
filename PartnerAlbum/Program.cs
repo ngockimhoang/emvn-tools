@@ -53,16 +53,23 @@ namespace PartnerAlbum
 
         static void SaveAlbumDDEXFile(string directory, PartnerAlbum album)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("http://developers.emvn.co");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUalhiaGFaeDk0WVc4bDh5MzY2WjNSZG4zbGF1Nkg1QSJ9.e7fr69iaYk0V2jl2OR3upYXm7_Sv5BDLufeGVcMlkVw");
-                var response = client.GetAsync("/partner/album/ddex/" + album.AlbumCode).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                content = Regex.Unescape(content).Trim('\n').Trim('"');
-                content = FormatXml(content);
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("http://developers.emvn.co");
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUalhiaGFaeDk0WVc4bDh5MzY2WjNSZG4zbGF1Nkg1QSJ9.e7fr69iaYk0V2jl2OR3upYXm7_Sv5BDLufeGVcMlkVw");
+                    var response = client.GetAsync("/partner/album/ddex/" + album.AlbumCode).Result;
+                    var content = response.Content.ReadAsStringAsync().Result;
+                    content = Regex.Unescape(content).Trim('\n').Trim('"');
+                    content = FormatXml(content);
 
-                System.IO.File.WriteAllText(System.IO.Path.Combine(directory, album.AlbumCode + ".xml"), content);
+                    System.IO.File.WriteAllText(System.IO.Path.Combine(directory, album.AlbumCode + ".xml"), content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 

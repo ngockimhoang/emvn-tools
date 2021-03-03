@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartnerAlbum", "PartnerAlbu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmptyISRC", "EmptyISRC\EmptyISRC.csproj", "{561A98B5-B8C8-4456-9363-2C374BDBC434}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Whitelist", "Whitelist\Whitelist.csproj", "{8DCBA1D5-F44E-466D-96DF-48A89BC7E23E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{561A98B5-B8C8-4456-9363-2C374BDBC434}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{561A98B5-B8C8-4456-9363-2C374BDBC434}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{561A98B5-B8C8-4456-9363-2C374BDBC434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DCBA1D5-F44E-466D-96DF-48A89BC7E23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DCBA1D5-F44E-466D-96DF-48A89BC7E23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DCBA1D5-F44E-466D-96DF-48A89BC7E23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DCBA1D5-F44E-466D-96DF-48A89BC7E23E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
