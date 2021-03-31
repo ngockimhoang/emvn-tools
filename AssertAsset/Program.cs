@@ -12,8 +12,8 @@ namespace AssertAsset
     {
         static void Main(string[] args)
         {
-            var inputPath = @"C:\Users\kimhoang\Desktop\EMVN\03-23-20 Brand X Music asset report update.csv";
-            var outputPath = @"C:\Users\kimhoang\Desktop\EMVN\assert_asset.csv";
+            var inputPath = @"D:\go-src\src\emvn-minions\youtube-asset-cli\input\STYE_EPIC ELITE ASSETS EXPORT - With Mapping.csv";
+            var outputPath = @"D:\go-src\src\emvn-minions\youtube-asset-cli\output\assert_asset.csv";
             var assetList = new List<YoutubeAsset>();
 
             using (var streamReader = System.IO.File.OpenText(inputPath))
@@ -24,15 +24,13 @@ namespace AssertAsset
                     reader.ReadHeader();
                     while (reader.Read())
                     {
-                        if (reader.GetField<string>("asset_type") == "SOUND_RECORDING")
+                        if (reader.GetField<string>("Asset Type").ToLower() == "sound recording")
                         {                            
                             var asset = new YoutubeAsset()
                             {
-                                AssetID = reader.GetField<string>("asset_id"),
-                                CustomID = reader.GetField<string>("custom_id"),
-                                AssetTitle = reader.GetField<string>("asset_title"),
-                                AssetLabel = "Brand X Music",
-
+                                AssetID = reader.GetField<string>("Asset ID"),                                
+                                AssetTitle = reader.GetField<string>("Title"),
+                                AssetLabel = "Songs To Your Eyes",
                             };
                             assetList.Add(asset);
                         }
@@ -63,7 +61,7 @@ namespace AssertAsset
                         foreach (var asset in assetList)
                         {
                             csvWriter.WriteField(asset.AssetID);
-                            csvWriter.WriteField(asset.CustomID);
+                            csvWriter.WriteField("");
                             csvWriter.WriteField("SOUND_RECORDING");
                             csvWriter.WriteField(asset.AssetTitle);
                             csvWriter.WriteField(asset.AssetLabel);
