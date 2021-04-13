@@ -13,7 +13,7 @@ namespace AssertAsset
         static void Main(string[] args)
         {
             var inputPath = @"D:\go-src\src\emvn-minions\youtube-asset-cli\input\STYE_EPIC ELITE ASSETS EXPORT - With Mapping.csv";
-            var outputPath = @"D:\go-src\src\emvn-minions\youtube-asset-cli\output\assert_asset.csv";
+            var outputPath = @"D:\go-src\src\emvn-minions\youtube-asset-cli\output\tools\assert_asset.csv";
             var assetList = new List<YoutubeAsset>();
 
             using (var streamReader = System.IO.File.OpenText(inputPath))
