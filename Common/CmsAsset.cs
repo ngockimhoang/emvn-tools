@@ -121,6 +121,18 @@ namespace Common
                     return InactiveReferenceID.Split(' ').Where(p => !string.IsNullOrEmpty(p)).Select(p => p.Trim()).ToArray();
                 else return new string[0];
             }
+        }       
+        public string GRID { get; set; }
+        public string ConstituentAssetID { get; set; }
+
+        public string[] ConstituentAssetIDList
+        {
+            get
+            {
+                if (ConstituentAssetID != null)
+                    return ConstituentAssetID.Split(' ').Where(p => !string.IsNullOrEmpty(p)).Select(p => p.Trim()).ToArray();
+                else return new string[0];
+            }
         }
     }
 }
