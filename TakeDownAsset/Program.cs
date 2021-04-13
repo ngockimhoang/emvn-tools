@@ -188,7 +188,7 @@ namespace TakeDownAsset
                         csvWriter.WriteField<string>("track_pline");
                         csvWriter.WriteField<string>("track_territory_start_dates");
                         csvWriter.WriteField<string>("track_explicit_lyrics");
-                        csvWriter.WriteField<string>("track_add_at_asset_labelss");
+                        csvWriter.WriteField<string>("track_add_at_asset_labels");
                         csvWriter.WriteField<string>("track_add_sr_asset_labels");                        
                         csvWriter.NextRecord();
 
