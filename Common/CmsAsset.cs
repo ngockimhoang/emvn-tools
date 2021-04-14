@@ -94,9 +94,11 @@ namespace Common
     public class YoutubeAsset
     {
         public string ISRC { get; set; }
+        public string Label { get; set; }
         public string AssetID { get; set; }
         public string AssetTitle { get; set; }
         public string Artist { get; set; }
+        public string Album { get; set; }
         public string AssetLabel { get; set; }
         public string ActiveReferenceID { get; set; }
         public string InactiveReferenceID { get; set; }
