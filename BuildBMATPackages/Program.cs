@@ -201,11 +201,13 @@ namespace BuildBMATPackages
             var cliFolder = @"D:\go-src\src\emvn-minions\youtube-asset-cli";
             foreach (var catalog in catalogs)
             {
+                Console.WriteLine("Processing catalog " + catalog.Name);
                 foreach (var label in catalog.Labels)
                 {
+                    Console.WriteLine("Processing label " + label);
                     var startInfo = new ProcessStartInfo("cmd");
                     startInfo.WorkingDirectory = cliFolder;
-                    startInfo.Arguments = string.Format("/K go run \"{0}/main.go\" --catalog \"{1}\" --label \"{2}\" build-bmat-package", cliFolder, catalog.Name, label);
+                    startInfo.Arguments = string.Format("/c go run \"{0}/main.go\" --catalog \"{1}\" --label \"{2}\" build-bmat-package", cliFolder, catalog.Name, label);
                     startInfo.WindowStyle = ProcessWindowStyle.Normal;
                     var process = Process.Start(startInfo);
                     process.WaitForExit();
