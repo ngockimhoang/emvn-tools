@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildBMATPackages", "BuildB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STYE", "STYE\STYE.csproj", "{BED1AD40-DB14-45CB-A9BB-E973B2F9594B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportClaim", "ExportClaim\ExportClaim.csproj", "{AE41FD7B-695C-42B2-95F5-ADEEEA7571BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{BED1AD40-DB14-45CB-A9BB-E973B2F9594B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BED1AD40-DB14-45CB-A9BB-E973B2F9594B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BED1AD40-DB14-45CB-A9BB-E973B2F9594B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE41FD7B-695C-42B2-95F5-ADEEEA7571BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE41FD7B-695C-42B2-95F5-ADEEEA7571BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE41FD7B-695C-42B2-95F5-ADEEEA7571BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE41FD7B-695C-42B2-95F5-ADEEEA7571BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
