@@ -63,8 +63,10 @@ namespace ExportClaim
             csvWriter.WriteField("claim_id");
             csvWriter.WriteField("video_id");
             csvWriter.WriteField("video_title");
+            csvWriter.WriteField("channel_id");
             csvWriter.WriteField("channel_display_name");
             csvWriter.WriteField("claim_created_date");
+            csvWriter.WriteField("asset_title");
             csvWriter.NextRecord();
             using (var streamReader = System.IO.File.OpenText(claimReport))
             {
@@ -81,6 +83,7 @@ namespace ExportClaim
                         var videoTitle = reader.GetField("video_title");
                         var claimCreatedDateStr = reader.GetField("claim_created_date");
                         var label = reader.GetField("asset_labels");
+                        var assetTitle = reader.GetField("asset_title");
                         if (label.ToUpper().Contains("SONGS TO YOUR EYES")
                             && !string.IsNullOrEmpty(channelName)
                             && !string.IsNullOrEmpty(videoTitle)
@@ -93,8 +96,10 @@ namespace ExportClaim
                                 csvWriter.WriteField(claimID);
                                 csvWriter.WriteField(videoID);
                                 csvWriter.WriteField(videoTitle);
+                                csvWriter.WriteField(channelID);
                                 csvWriter.WriteField(channelName);
                                 csvWriter.WriteField(claimCreatedDateStr);
+                                csvWriter.WriteField(assetTitle);
                                 csvWriter.NextRecord();
                             }
                         }
