@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STYE", "STYE\STYE.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportClaim", "ExportClaim\ExportClaim.csproj", "{AE41FD7B-695C-42B2-95F5-ADEEEA7571BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportArtTrackUpdateCSV", "ExportArtTrackUpdateCSV\ExportArtTrackUpdateCSV.csproj", "{2A738FB4-C17C-43A0-9BAE-2EF89979E82D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{AE41FD7B-695C-42B2-95F5-ADEEEA7571BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE41FD7B-695C-42B2-95F5-ADEEEA7571BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE41FD7B-695C-42B2-95F5-ADEEEA7571BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A738FB4-C17C-43A0-9BAE-2EF89979E82D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A738FB4-C17C-43A0-9BAE-2EF89979E82D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A738FB4-C17C-43A0-9BAE-2EF89979E82D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A738FB4-C17C-43A0-9BAE-2EF89979E82D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,40 +14,8 @@ namespace ExportClaim
         static void Main(string[] args)
         {
             var claimReport = @"D:\go-src\src\emvn-minions\youtube-asset-cli\input\claim_report_Audiomachine_C.csv";
-            var unofficialChannelFile = @"D:\go-src\src\emvn-minions\youtube-asset-cli\input\unofficial-channels.json";
-            //var assetReport = @"D:\go-src\src\emvn-minions\youtube-asset-cli\input\asset_full_report_Audiomachine_L_v1-2.csv";
-            var output = @"D:\go-src\src\emvn-minions\youtube-asset-cli\output\stye-claims.csv";
-            //var styeAssets = new Dictionary<string, string>();
-            //using (var streamReader = System.IO.File.OpenText(assetReport))
-            //{
-            //    using (var reader = new CsvHelper.CsvReader(streamReader, System.Threading.Thread.CurrentThread.CurrentCulture))
-            //    {
-            //        reader.ReadHeader();
-            //        while (reader.Read())
-            //        {
-            //            var assetID = reader.GetField("asset_id");
-            //            var assetType = reader.GetField("asset_type");
-            //            var label = reader.GetField("asset_label");
-            //            var constituent_asset_id = reader.GetField("constituent_asset_id");
-            //            var childAssetIDs = constituent_asset_id.Split(' ');
-            //            if (assetType.ToUpper() == "SOUND_RECORDING"
-            //                && label.ToUpper().Contains("SONGS TO YOUR EYES"))
-            //            {
-            //                if (!styeAssets.ContainsKey(assetID))
-            //                {
-            //                    styeAssets.Add(assetID, assetID);
-            //                }
-            //                foreach (var childAssetID in childAssetIDs)
-            //                {
-            //                    if (!styeAssets.ContainsKey(childAssetID))
-            //                    {
-            //                        styeAssets.Add(childAssetID, childAssetID);
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
+            var unofficialChannelFile = @"D:\go-src\src\emvn-minions\youtube-asset-cli\input\unofficial-channels.json";            
+            var output = @"D:\go-src\src\emvn-minions\youtube-asset-cli\output\ACV-Entertainment-claims.csv";            
 
             var unofficialChannels = JsonConvert.DeserializeObject<ChannelList>(System.IO.File.ReadAllText(unofficialChannelFile));
             var unofficialChannelsDict = new Dictionary<string, string>();
@@ -84,7 +52,8 @@ namespace ExportClaim
                         var claimCreatedDateStr = reader.GetField("claim_created_date");
                         var label = reader.GetField("asset_labels");
                         var assetTitle = reader.GetField("asset_title");
-                        if (label.ToUpper().Contains("SONGS TO YOUR EYES")
+                        var assetID = reader.GetField("asset_id");
+                        if (string.Equals(label, "ACV Entertainment", StringComparison.InvariantCultureIgnoreCase)
                             && !string.IsNullOrEmpty(channelName)
                             && !string.IsNullOrEmpty(videoTitle)
                             && !string.IsNullOrEmpty(claimCreatedDateStr)

@@ -125,6 +125,7 @@ namespace Common
             }
         }       
         public string GRID { get; set; }
+        public string UPC { get; set; }
         public string ConstituentAssetID { get; set; }
 
         public string[] ConstituentAssetIDList
@@ -134,6 +135,24 @@ namespace Common
                 if (ConstituentAssetID != null)
                     return ConstituentAssetID.Split(' ').Where(p => !string.IsNullOrEmpty(p)).Select(p => p.Trim()).ToArray();
                 else return new string[0];
+            }
+        }
+
+        public int? TrackNumber
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(CustomID))
+                {
+                    var parts = CustomID.Split('_');
+                    var trackNumber = -1;
+                    if (parts.Length == 2
+                        && int.TryParse(parts[1], out trackNumber))
+                    {
+                        return trackNumber;
+                    }
+                }
+                return null;
             }
         }
     }

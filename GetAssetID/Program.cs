@@ -7,53 +7,34 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GetAssetID
-{
-    class LavilleTrack
-    {        
-        public string Catalog { get; set; }
-        public string AlbumID { get; set; }
-        public string TrackID { get; set; }
-        public string CustomID
-        {
-            get
-            {
-                return string.Format("{0}_{1}_{2}", this.Catalog.ToLower(), this.AlbumID, this.TrackID);
-            }
-        }
-    }
-
+{    
     class Program
     {
         static void Main(string[] args)
         {
-            var youtubeReportPath = @"C:\Users\kimhoang\Desktop\EMVN\asset_full_report_Audiomachine_L_v1-1.csv";            
-            var outputPath = @"C:\Users\kimhoang\Desktop\EMVN\sr-delete.csv";            
-            var ytAssets = new List<YoutubeAsset>();           
+            var youtubeReportPath = @"D:\go-src\src\emvn-minions\youtube-asset-cli\input\asset_full_report_Audiomachine_Publishing_L_v1-2.csv";            
+            var outputPath = @"D:\go-src\src\emvn-minions\youtube-asset-cli\output\twisted-jukebox-missing-label-assets.csv";
+            var headers = new string[0];
+            var assets = new List<string[]>();
 
             using (var streamReader = System.IO.File.OpenText(youtubeReportPath))
             {
-                using (var reader = new CsvHelper.CsvReader(streamReader, System.Threading.Thread.CurrentThread.CurrentCulture))
+                using (var reader = new CsvHelper.CsvParser(streamReader, System.Threading.Thread.CurrentThread.CurrentCulture))
                 {
-                    reader.Read();
-                    reader.ReadHeader();
-                    while (reader.Read())
-                    {
-                        if (reader.GetField<string>("asset_type") == "SOUND_RECORDING")
+                    headers = reader.Read();
+                    string[] row = null;
+                    while ((row = reader.Read()) != null)
+                    {                       
+                        var customID = row[6];
+                        var assetLabel = row[12];
+                        if (!assetLabel.Contains("Twisted Jukebox")
+                            && (customID.StartsWith("TJ")
+                                || customID.StartsWith("ALIVE")
+                                || customID.StartsWith("ANARCH")
+                                || customID.StartsWith("AdM")
+                                || customID.StartsWith("SIMPLY")))
                         {
-                            var label = reader.GetField<string>("asset_label").Trim();
-                            if (label == "Minim"
-                                || label == "Lovely Music Library"
-                                || label == "Gothic Storm's Toolworks"
-                                || label == "Sham Stalin"
-                                || label == "WeWe"
-                                || label == "Shin Hong Vinh"
-                                || label == "Cuong Seven")
-                            {
-                                ytAssets.Add(new YoutubeAsset()
-                                {
-                                    AssetID = reader.GetField<string>("asset_id").Trim()
-                                });
-                            }
+                            assets.Add(row);
                         }
                     }
                 }
@@ -65,13 +46,18 @@ namespace GetAssetID
                 {
                     using (var csvWriter = new CsvHelper.CsvWriter(writer, System.Threading.Thread.CurrentThread.CurrentCulture))
                     {
-                        csvWriter.Configuration.HasHeaderRecord = true;
-                        csvWriter.WriteField<string>("Asset_ID");                        
+                        foreach (var header in headers)
+                        {
+                            csvWriter.WriteField(header);
+                        }
                         csvWriter.NextRecord();
 
-                        foreach (var asset in ytAssets)
+                        foreach (var asset in assets)
                         {
-                            csvWriter.WriteField<string>(asset.AssetID);
+                            foreach (var column in asset)
+                            {
+                                csvWriter.WriteField(column);
+                            }                            
                             csvWriter.NextRecord();
                         }
                         csvWriter.Flush();
