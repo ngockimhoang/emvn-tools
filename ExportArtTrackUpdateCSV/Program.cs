@@ -25,7 +25,7 @@ namespace ExportArtTrackUpdateCSV
                     while (reader.Read())
                     {
                         var assetType = reader.GetField("asset_type");
-                        if (assetType.Equals("ART_TRACK_VIDEO", StringComparison.InvariantCultureIgnoreCase))
+                        if (assetType.Equals("SOUND_RECORDING", StringComparison.InvariantCultureIgnoreCase))
                         {
                             var customID = reader.GetField("custom_id");
                             var isrc = reader.GetField("isrc");
@@ -112,7 +112,7 @@ namespace ExportArtTrackUpdateCSV
                                 csvWriter.WriteField("");
                                 csvWriter.WriteField(asset.Artist);
                                 csvWriter.WriteField("");
-                                csvWriter.WriteField(asset.AssetTitle);
+                                csvWriter.WriteField(asset.Album);
                                 csvWriter.WriteField(asset.GRID);
                                 csvWriter.WriteField("");
                                 csvWriter.WriteField(asset.UPC);
