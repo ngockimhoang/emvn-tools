@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportClaim", "ExportClaim\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportArtTrackUpdateCSV", "ExportArtTrackUpdateCSV\ExportArtTrackUpdateCSV.csproj", "{2A738FB4-C17C-43A0-9BAE-2EF89979E82D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckSAUserTrackStatReport", "CheckSAUserTrackStatReport\CheckSAUserTrackStatReport.csproj", "{46AC6AD9-B543-4EC4-A88F-66D4AD42C5B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{2A738FB4-C17C-43A0-9BAE-2EF89979E82D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A738FB4-C17C-43A0-9BAE-2EF89979E82D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A738FB4-C17C-43A0-9BAE-2EF89979E82D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46AC6AD9-B543-4EC4-A88F-66D4AD42C5B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46AC6AD9-B543-4EC4-A88F-66D4AD42C5B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46AC6AD9-B543-4EC4-A88F-66D4AD42C5B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46AC6AD9-B543-4EC4-A88F-66D4AD42C5B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
